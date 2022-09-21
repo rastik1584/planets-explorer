@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('top-ten-planets', [\App\Http\Controllers\ApiPlanetsController::class, 'topTenLargestPlanets']);
+Route::get('all-species-in-planets', [\App\Http\Controllers\ApiPlanetsController::class, 'allSpeciesLivingInPlanets']);
 
 Route::post('create-logbook', [\App\Http\Controllers\ApiLogBookController::class, 'store']);
 Route::get('all-logbooks', [\App\Http\Controllers\ApiLogBookController::class, 'show']);

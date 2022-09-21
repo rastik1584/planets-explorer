@@ -48,7 +48,7 @@ class PlanetsController extends Controller
      * @param $planets
      * @return mixed
      */
-    private function createPlanetAndResidents($planets)
+    private function createPlanetAndResidents($planets) : Planets
     {
         foreach($planets['results'] as $result) {
             $planet = Planets::firstOrCreate([
@@ -63,11 +63,37 @@ class PlanetsController extends Controller
                 'population' => $result['population'],
             ]);
             foreach($result['residents'] as $resident) {
+                $name_and_species = $this->getResidentNameAndSpeciesName($resident);
                 $planet->residents()->firstOrCreate([
                     'url' => $resident,
+                    'name' => $name_and_species['name'],
+                    'species_name' => $name_and_species['species'],
                 ]);
             }
         }
         return $planet;
+    }
+
+    /**
+     * get resident name and spieces name
+     * @param $url
+     * @return array
+     */
+    private function getResidentNameAndSpeciesName($url) : array
+    {
+        $resident = Http::get($url)->json();
+        $return['name'] = $resident['name'];
+        if(count($resident['species']) > 1) {
+            dd($resident);
+        }
+
+        foreach($resident['species'] as $spiece) {
+            $specie_name = Http::get($spiece)->json();
+            $return['species'] = $specie_name['name'];
+        }
+
+        if(empty($resident['species'])) $return['species'] = 'unknown';
+
+        return $return;
     }
 }

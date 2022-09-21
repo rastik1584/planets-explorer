@@ -19,3 +19,4 @@ Route::get('/', function () {
 });
 
 Route::get('/planets', [PlanetsController::class, 'index']);
+Route::get('/sync', [PlanetsController::class, 'planetsSync']);

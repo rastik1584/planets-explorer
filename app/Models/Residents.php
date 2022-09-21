@@ -11,6 +11,6 @@ class Residents extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'residents';
-    protected $fillable = ['planet_id','url'];
+    protected $fillable = ['planet_id', 'species_name', 'name', 'url'];
 
 }

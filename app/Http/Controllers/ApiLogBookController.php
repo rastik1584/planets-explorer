@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Crypt;
 
 class ApiLogBookController extends Controller
 {
+    /**
+     * Store logBook
+     * @param LogBookRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(LogBookRequest $request)
     {
         LogBook::create([
@@ -24,6 +29,11 @@ class ApiLogBookController extends Controller
         return response()->json('success');
     }
 
+
+    /**
+     * Show all logbooks
+     * @return \Spatie\Fractal\Fractal
+     */
     public function show()
     {
         return fractal(LogBook::all(), new ShowLogBooksTransformer());

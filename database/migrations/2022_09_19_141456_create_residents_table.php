@@ -16,6 +16,8 @@ class CreateResidentsTable extends Migration
         Schema::create('residents', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('planet_id');
+            $table->string('name');
+            $table->string('species_name');
             $table->string('url');
 
             $table->timestamps();
