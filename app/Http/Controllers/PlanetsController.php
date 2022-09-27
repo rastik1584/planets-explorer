@@ -48,9 +48,9 @@ class PlanetsController extends Controller
      * @param $planets
      * @return mixed
      */
-    private function createPlanetAndResidents($planets) : Planets
+    private function createPlanetAndResidents($planets)
     {
-        foreach($planets['results'] as $result) {
+        return collect($planets['results'])->map(function ($result) {
             $planet = Planets::firstOrCreate([
                 'name' => $result['name'],
                 'rotation_period' => $result['rotation_period'],
@@ -62,16 +62,18 @@ class PlanetsController extends Controller
                 'surface_water' => $result['surface_water'],
                 'population' => $result['population'],
             ]);
-            foreach($result['residents'] as $resident) {
+
+            collect($result['residents'])->map(function ($resident) use ($planet) {
                 $name_and_species = $this->getResidentNameAndSpeciesName($resident);
                 $planet->residents()->firstOrCreate([
                     'url' => $resident,
                     'name' => $name_and_species['name'],
                     'species_name' => $name_and_species['species'],
                 ]);
-            }
-        }
-        return $planet;
+            });
+
+            return $planet;
+        });
     }
 
     /**
@@ -83,14 +85,11 @@ class PlanetsController extends Controller
     {
         $resident = Http::get($url)->json();
         $return['name'] = $resident['name'];
-        if(count($resident['species']) > 1) {
-            dd($resident);
-        }
 
-        foreach($resident['species'] as $spiece) {
+        $return['species'] = collect($resident['species'])->map(function ($spiece) {
             $specie_name = Http::get($spiece)->json();
-            $return['species'] = $specie_name['name'];
-        }
+            return $specie_name['name'];
+        });
 
         if(empty($resident['species'])) $return['species'] = 'unknown';
 
